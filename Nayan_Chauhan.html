@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chauhan Nayan - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#0e9f6e',secondary:'#4b5563'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .skill-bar {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e5e7eb;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .skill-progress {
+            height: 100%;
+            border-radius: 4px;
+            background-color: #0e9f6e;
+        }
+        
+        .timeline-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #0e9f6e;
+            position: absolute;
+            left: -8px;
+            top: 0;
+        }
+        
+        .timeline-line {
+            width: 2px;
+            background-color: #e5e7eb;
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+        }
+        
+        .gallery-item {
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+        }
+        
+        .card-3d:hover {
+            transform: rotateY(10deg) rotateX(5deg);
+        }
+        
+        .card-3d:hover .card-shine {
+            opacity: 1;
+        }
+        
+        .card-shine {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 50;
+            overflow-y: auto;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-mobile {
+                display: none;
+            }
+            
+            .menu-mobile.active {
+                display: block;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        .section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .progress-container {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 4px;
+            z-index: 40;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: linear-gradient(to right, #0e9f6e, #34d399);
+            width: 0%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <div class="fixed top-4 right-4 z-40 lg:hidden">
+        <button id="menuToggle" class="bg-white p-2 rounded-full shadow-md !rounded-button">
+            <div class="w-8 h-8 flex items-center justify-center text-gray-700">
+                <i class="ri-menu-line ri-lg"></i>
+            </div>
+        </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="menu-mobile fixed top-0 left-0 w-full h-full bg-white z-30 transform transition-transform duration-300 translate-x-full">
+        <div class="p-6 flex flex-col h-full">
+            <div class="flex justify-end mb-8">
+                <button id="closeMenu" class="p-2 !rounded-button">
+                    <div class="w-8 h-8 flex items-center justify-center text-gray-700">
+                        <i class="ri-close-line ri-lg"></i>
+                    </div>
+                </button>
+            </div>
+            <nav class="flex flex-col space-y-6 text-lg font-medium">
+                <a href="#home" class="nav-link text-gray-800 hover:text-primary transition-colors">Home</a>
+                <a href="#about" class="nav-link text-gray-800 hover:text-primary transition-colors">About</a>
+                <a href="#experience" class="nav-link text-gray-800 hover:text-primary transition-colors">Experience</a>
+                <a href="#projects" class="nav-link text-gray-800 hover:text-primary transition-colors">Projects</a>
+                <a href="#gallery" class="nav-link text-gray-800 hover:text-primary transition-colors">Design Gallery</a>
+                <a href="#education" class="nav-link text-gray-800 hover:text-primary transition-colors">Education</a>
+                <a href="#contact" class="nav-link text-gray-800 hover:text-primary transition-colors">Contact</a>
+            </nav>
+            <div class="mt-auto">
+                <div class="flex space-x-4 mt-6">
+                    <a href="https://www.linkedin.com/in/nayan-chauhan-50334230b" class="text-gray-600 hover:text-primary transition-colors">
+                        <div class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full">
+                            <i class="ri-linkedin-fill ri-lg"></i>
+                        </div>
+                    </a>
+                    <a href="https://github.com/Nayan9687" class="text-gray-600 hover:text-primary transition-colors">
+                        <div class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full">
+                            <i class="ri-github-fill ri-lg"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/rc_rajput007/" class="text-gray-600 hover:text-primary transition-colors">
+                        <div class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full">
+                            <i class="ri-instagram-fill ri-lg"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <header class="hidden lg:block fixed top-0 left-0 right-0 bg-white bg-opacity-95 shadow-sm z-40 backdrop-blur-sm">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="text-2xl font-bold text-gray-800">
+                    <span class="text-primary  ">Nayan</span> Chauhan
+                </div>
+                <nav class="flex items-center space-x-8">
+                    <a href="#home" class="nav-link text-gray-700 hover:text-primary font-medium transition-colors">Home</a>
+                    <a href="#about" class="nav-link text-gray-700 hover:text-primary font-medium transition-colors">About</a>
+                    <a href="#experience" class="nav-link text-gray-700 hover:text-primary font-medium transition-colors">Experience</a>
+                    <a href="#projects" class="nav-link text-gray-700 hover:text-primary font-medium transition-colors">Projects</a>
+                    <a href="#gallery" class="nav-link text-gray-700 hover:text-primary font-medium transition-colors">Gallery</a>
+                    <a href="#education" class="nav-link text-gray-700 hover:text-primary font-medium transition-colors">Education</a>
+                    <a href="#contact" class="nav-link text-gray-700 hover:text-primary font-medium transition-colors">Contact</a>
+                </nav>
+                <div class="flex space-x-4">
+                    <a href="https://www.linkedin.com/in/nayan-chauhan-50334230b"" class="text-gray-600 hover:text-primary transition-colors">
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="ri-linkedin-fill ri-lg"></i>
+                        </div>
+                    </a>
+                    <a href="https://github.com/Nayan9687" class="text-gray-600 hover:text-primary transition-colors">
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="ri-github-fill ri-lg"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/rc_rajput007/" class="text-gray-600 hover:text-primary transition-colors">
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="ri-instagram-fill ri-lg"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen pt-20 lg:pt-0 flex items-center relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-gray-100 to-white opacity-70 -z-10"></div>
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent -z-10"></div>
+        
+        <div class="container mx-auto px-6 py-12 lg:py-0">
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="w-full lg:w-1/2 mb-12 lg:mb-0 animate-fade-in" style="animation-delay: 0.2s;">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-4">
+                        <span class="text-primary">CHAUHAN</span><br>
+                        NAYAN
+                    </h1>
+                    <div class="h-1 w-32 bg-primary mb-6"></div>
+                    <h2 class="text-xl md:text-2xl font-medium text-gray-600 mb-8">FRONT-END DEVELOPER</h2>
+                    <p class="text-gray-600 mb-8 max-w-lg">
+                        To obtain a position as a Frontend Developer & Graphic Designer where I can apply my skills in UI/UX design, HTML/CSS, and visual creativity to deliver impactful digital solutions
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#projects" class="bg-primary text-white px-6 py-3 rounded-button font-medium hover:bg-primary/90 transition-colors shadow-md">
+                            View Projects
+                        </a>
+                        <a href="#contact" class="bg-white text-gray-800 px-6 py-3 rounded-button font-medium border border-gray-300 hover:bg-gray-50 transition-colors shadow-sm">
+                            Contact Me
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="w-full lg:w-1/2 flex justify-center animate-fade-in" style="animation-delay: 0.4s;">
+                    <div class="relative w-full max-w-md perspective">
+                        <div class="card-3d bg-white rounded-2xl shadow-xl overflow-hidden">
+                            <div class="card-shine"></div>
+                            <div class="p-8">
+                                <div class="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6 mx-auto">
+                                    <div class="w-16 h-16 flex items-center justify-center text-primary">
+                                        <i class="ri-code-s-slash-line ri-3x"></i>
+                                    </div>
+                                </div>
+                                <h3 class="text-xl font-semibold text-center mb-4">Front-end Developer</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 flex items-center justify-center text-primary mr-3">
+                                            <i class="ri-html5-line ri-lg"></i>
+                                        </div>
+                                        <span class="text-gray-700">HTML/CSS</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 flex items-center justify-center text-primary mr-3">
+                                            <i class="ri-javascript-line ri-lg"></i>
+                                        </div>
+                                        <span class="text-gray-700">JavaScript</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 flex items-center justify-center text-primary mr-3">
+                                            <i class="ri-wordpress-line ri-lg"></i>
+                                        </div>
+                                        <span class="text-gray-700">WordPress</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 flex items-center justify-center text-primary mr-3">
+                                            <i class="ri-palette-line ri-lg"></i>
+                                        </div>
+                                        <span class="text-gray-700">Graphic Design</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 flex items-center justify-center text-primary mr-3">
+                                            <i class="ri-shopping-bag-line ri-lg"></i>
+                                        </div>
+                                        <span class="text-gray-700">Shopify</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white section">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row items-start">
+                <div class="w-full lg:w-1/3 mb-12 lg:mb-0">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">About Me</h2>
+                    <div class="h-1 w-20 bg-primary mb-8"></div>
+                    
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8 card-3d">
+                        <div class="card-shine"></div>
+                        <img src="/images/my_photo_Last.png" 
+                             alt="Chauhan Nayan" class="w-full h-auto object-cover">
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">CONTACT</h3>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 flex items-center justify-center text-primary mr-4">
+                                <i class="ri-phone-line ri-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-600">Phone</p>
+                                <p class="text-gray-800 font-medium">8200701016</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 flex items-center justify-center text-primary mr-4">
+                                <i class="ri-mail-line ri-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-600">Email</p>
+                                <p class="text-gray-800 font-medium">nayanchauhan11111@gmail.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 flex items-center justify-center text-primary mr-4">
+                                <i class="ri-map-pin-line ri-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-600">Address</p>
+                                <p class="text-gray-800 font-medium">5-34 Ramkrishna nagar, Nadiad</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="w-full lg:w-2/3 lg:pl-16">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6">MY EXPERTISE</h3>
+                    
+                    <div class="space-y-6 mb-12">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium text-gray-700">HTML</span>
+                                <span class="text-gray-600">90%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium text-gray-700">CSS</span>
+                                <span class="text-gray-600">80%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium text-gray-700">JavaScript</span>
+                                <span class="text-gray-600">60%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="width: 60%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium text-gray-700">WordPress</span>
+                                <span class="text-gray-600">70%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium text-gray-700">Graphics Designing</span>
+                                <span class="text-gray-600">70%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="width: 70%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6">INTERNSHIP</h3>
+                    <div class="space-y-8 relative">
+                        <div class="timeline-line h-full"></div>
+                        
+                        <div class="pl-8 relative">
+                            <div class="timeline-dot"></div>
+                            <h4 class="text-lg font-medium text-gray-800 mb-2">TATA Strive | Anand</h4>
+                            <p class="text-gray-600 mb-2">Internship in Java full stack developer - 2023</p>
+                            <p class="text-gray-600">Worked on developing full-stack applications using Java, Spring Boot, and React.js. Collaborated with a team to deliver client projects and learned industry best practices.</p>
+                        </div>
+                        
+                        <div class="pl-8 relative">
+                            <div class="timeline-dot"></div>
+                            <h4 class="text-lg font-medium text-gray-800 mb-2">Kathan Technologies | Nadiad</h4>
+                            <p class="text-gray-600 mb-2">Internship in Front-end development - 2022</p>
+                            <p class="text-gray-600">Focused on building responsive web interfaces using HTML, CSS, and JavaScript. Worked on multiple client websites and gained practical experience in front-end development workflows.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="py-20 bg-gray-50 section">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">WORK EXPERIENCE</h2>
+                <div class="h-1 w-20 bg-primary mx-auto"></div>
+            </div>
+            
+            <div class="max-w-10xl mx-auto">
+                <div class="space-y-12 relative">
+                    <div class="timeline-line h-full"></div>
+                    
+                    <div class="pl-8 relative">
+                        <div class="timeline-dot"></div>
+                        <div class="bg-white rounded-xl shadow-md p-6 card-3d">
+                            <div class="card-shine"></div>
+                            <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                                <h3 class="text-xl font-semibold text-gray-800">Graphic Designer & Shopify</h3>
+                                <div class="flex items-center mt-2 md:mt-0">
+                                    <div class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                                        2024-2025 [6 months]
+                                    </div>
+                                </div>
+                            </div>
+                            <h4 class="text-lg font-medium text-gray-700 mb-4">Kuhluh Clothing Brand | Pune</h4>
+                            <p class="text-gray-600 mb-4">Working as a Graphic Designer, managing Social media & Shopify Platform</p>
+                            <div class="space-y-2">
+                                <div class="flex items-start">
+                                    <div class="w-5 h-5 flex items-center justify-center text-primary mt-1 mr-2">
+                                        <i class="ri-check-line"></i>
+                                    </div>
+                                    <p class="text-gray-600">Created brand identity materials and marketing graphics for social media campaigns</p>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-5 h-5 flex items-center justify-center text-primary mt-1 mr-2">
+                                        <i class="ri-check-line"></i>
+                                    </div>
+                                    <p class="text-gray-600">Managed and customized Shopify store, including theme modifications and product listings</p>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-5 h-5 flex items-center justify-center text-primary mt-1 mr-2">
+                                        <i class="ri-check-line"></i>
+                                    </div>
+                                    <p class="text-gray-600">Optimized store performance and user experience to increase conversion rates</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pl-8 relative">
+                        <div class="timeline-dot"></div>
+                        <div class="bg-white rounded-xl shadow-md p-6 card-3d">
+                            <div class="card-shine"></div>
+                            <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                                <h3 class="text-xl font-semibold text-gray-800">WordPress developer & Graphic Designer</h3>
+                                <div class="flex items-center mt-2 md:mt-0">
+                                    <div class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                                        2023-2024 [1 Year]
+                                    </div>
+                                </div>
+                            </div>
+                            <h4 class="text-lg font-medium text-gray-700 mb-4">E6Websolutions | Pune</h4>
+                            <p class="text-gray-600 mb-4">Working as a WordPress Web developer and graphics designer</p>
+                            <div class="space-y-2">
+                                <div class="flex items-start">
+                                    <div class="w-5 h-5 flex items-center justify-center text-primary mt-1 mr-2">
+                                        <i class="ri-check-line"></i>
+                                    </div>
+                                    <p class="text-gray-600">Developed and maintained WordPress websites for multiple clients</p>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-5 h-5 flex items-center justify-center text-primary mt-1 mr-2">
+                                        <i class="ri-check-line"></i>
+                                    </div>
+                                    <p class="text-gray-600">Customized themes and plugins to meet specific client requirements</p>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-5 h-5 flex items-center justify-center text-primary mt-1 mr-2">
+                                        <i class="ri-check-line"></i>
+                                    </div>
+                                    <p class="text-gray-600">Created visual assets and marketing materials for digital campaigns</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pl-8 relative">
+                        <div class="timeline-dot"></div>
+                        <div class="bg-white rounded-xl shadow-md p-6 card-3d">
+                            <div class="card-shine"></div>
+                            <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                                <h3 class="text-xl font-semibold text-gray-800">Front-end & WordPress developer</h3>
+                                <div class="flex items-center mt-2 md:mt-0">
+                                    <div class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                                        2022 [3 Months]
+                                    </div>
+                                </div>
+                            </div>
+                            <h4 class="text-lg font-medium text-gray-700 mb-4">Ample infotech | Nadiad</h4>
+                            <p class="text-gray-600 mb-4">Working as a developer and graphics designer</p>
+                            <div class="space-y-2">
+                                <div class="flex items-start">
+                                    <div class="w-5 h-5 flex items-center justify-center text-primary mt-1 mr-2">
+                                        <i class="ri-check-line"></i>
+                                    </div>
+                                    <p class="text-gray-600">Built responsive front-end interfaces using HTML, CSS, and JavaScript</p>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-5 h-5 flex items-center justify-center text-primary mt-1 mr-2">
+                                        <i class="ri-check-line"></i>
+                                    </div>
+                                    <p class="text-gray-600">Implemented WordPress solutions for small business clients</p>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-5 h-5 flex items-center justify-center text-primary mt-1 mr-2">
+                                        <i class="ri-check-line"></i>
+                                    </div>
+                                    <p class="text-gray-600">Designed logos, banners, and other graphic elements for client projects</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-white section">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">MY PROJECTS</h2>
+                <div class="h-1 w-20 bg-primary mx-auto mb-6"></div>
+                <p class="text-gray-600 max-w-2xl mx-auto">Explore my latest projects showcasing my skills in front-end development, WordPress customization, and UI/UX design.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="card-3d bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="card-shine"></div>
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://ik.imagekit.io/4awlyo9bf/images/WEBSITE/sici.png" 
+                             alt="Sici Technologies" class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-110">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Sici Technologies</h3>
+                        <p class="text-gray-600 mb-4">A corporate website for IT solutions company with modern design and responsive layout.</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">HTML</span>
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">CSS</span>
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">JavaScript</span>
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">WordPress</span>
+                        </div>
+                        <div class="flex space-x-3">
+                            <a href="https://sicitechnologies.com/" target="_blank" class="bg-primary text-white px-4 py-2 rounded-button font-medium hover:bg-primary/90 transition-colors flex-1 text-center whitespace-nowrap">
+                                Live Demo
+                            </a>
+                            <a href="#" target="_blank" class="bg-white text-gray-800 px-4 py-2 rounded-button font-medium border border-gray-300 hover:bg-gray-50 transition-colors flex-1 text-center whitespace-nowrap">
+                                GitHub
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project 2 -->
+                <div class="card-3d bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="card-shine"></div>
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://ik.imagekit.io/4awlyo9bf/images/WEBSITE/eduzone.png" 
+                             alt="Eduzone Frontend" class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-110">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Eduzone Frontend</h3>
+                        <p class="text-gray-600 mb-4">An educational platform frontend with course listings, user dashboard, and interactive features.</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">HTML</span>
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">CSS</span>
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">JavaScript</span>
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">Bootstrap</span>
+                        </div>
+                        <div class="flex space-x-3">
+                            <a href="https://nayanchauhan2015.github.io/Eduzone_frontend/" target="_blank" class="bg-primary text-white px-4 py-2 rounded-button font-medium hover:bg-primary/90 transition-colors flex-1 text-center whitespace-nowrap">
+                                Live Demo
+                            </a>
+                            <a href="https://github.com/nayanchauhan2015/Eduzone_frontend" target="_blank" class="bg-white text-gray-800 px-4 py-2 rounded-button font-medium border border-gray-300 hover:bg-gray-50 transition-colors flex-1 text-center whitespace-nowrap">
+                                GitHub
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project 3 -->
+                <div class="card-3d bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="card-shine"></div>
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://ik.imagekit.io/4awlyo9bf/images/WEBSITE/first_portfolio.png?updatedAt=1751300808023" 
+                             alt="3D Portfolio" class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-110">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">3D Portfolio</h3>
+                        <p class="text-gray-600 mb-4">An interactive 3D portfolio website showcasing projects with immersive animations and effects.</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">HTML</span>
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">CSS</span>
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">JavaScript</span>
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">Three.js</span>
+                        </div>
+                        <div class="flex space-x-3">
+                            <a href="https://nayanchauhan2015.github.io/my3dportfolio/" target="_blank" class="bg-primary text-white px-4 py-2 rounded-button font-medium hover:bg-primary/90 transition-colors flex-1 text-center whitespace-nowrap">
+                                Live Demo
+                            </a>
+                            <a href="https://github.com/nayanchauhan2015/my3dportfolio" target="_blank" class="bg-white text-gray-800 px-4 py-2 rounded-button font-medium border border-gray-300 hover:bg-gray-50 transition-colors flex-1 text-center whitespace-nowrap">
+                                GitHub
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-20 bg-gray-50 section">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">DESIGN GALLERY</h2>
+                <div class="h-1 w-20 bg-primary mx-auto mb-6"></div>
+                <p class="text-gray-600 max-w-2xl mx-auto">A showcase of my graphic design work including branding, UI/UX, social media graphics, and more.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Gallery Item 1 -->
+                <div class="gallery-item rounded-xl overflow-hidden shadow-md cursor-pointer" data-index="0">
+                    <img src="https://ik.imagekit.io/4awlyo9bf/images/LOGO/7.png" 
+                         alt="Logo Design" class="w-full h-64 object-cover object-top">
+                    <div class="p-4 bg-white">
+                        <h3 class="text-lg font-medium text-gray-800">Logo Design</h3>
+                        <p class="text-gray-600">Corporate branding for tech company</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 2 -->
+                <div class="gallery-item rounded-xl overflow-hidden shadow-md cursor-pointer" data-index="1">
+                    <img src="https://ik.imagekit.io/4awlyo9bf/images/POST/7.png" 
+                         alt="Social Media Design" class="w-full h-64 object-cover object-top">
+                    <div class="p-4 bg-white">
+                        <h3 class="text-lg font-medium text-gray-800">Social Media Design</h3>
+                        <p class="text-gray-600">Instagram campaign for fashion brand</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 3 -->
+                <div class="gallery-item rounded-xl overflow-hidden shadow-md cursor-pointer" data-index="2">
+                    <img src="https://ik.imagekit.io/4awlyo9bf/images/UIUX/BANNER.PNG" 
+                         alt="UI/UX Design" class="w-full h-64 object-cover object-top">
+                    <div class="p-4 bg-white">
+                        <h3 class="text-lg font-medium text-gray-800">UI/UX Design</h3>
+                        <p class="text-gray-600">Mobile app interface in figma</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 4 -->
+                <div class="gallery-item rounded-xl overflow-hidden shadow-md cursor-pointer" data-index="3">
+                    <img src="https://ik.imagekit.io/4awlyo9bf/images/WEBSITE/sici.png" 
+                         alt="Web Design" class="w-full h-64 object-cover object-top">
+                    <div class="p-4 bg-white">
+                        <h3 class="text-lg font-medium text-gray-800">Web Design</h3>
+                        <p class="text-gray-600">Landing page for SaaS product</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 5 -->
+                <div class="gallery-item rounded-xl overflow-hidden shadow-md cursor-pointer" data-index="4">
+                    <img src="https://ik.imagekit.io/4awlyo9bf/images/PRODUCTS/2.png" 
+                         alt="Packaging Design" class="w-full h-64 object-cover object-top">
+                    <div class="p-4 bg-white">
+                        <h3 class="text-lg font-medium text-gray-800">Packaging Design</h3>
+                        <p class="text-gray-600">Product packaging for Marketing</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 6 -->
+                <div class="gallery-item rounded-xl overflow-hidden shadow-md cursor-pointer" data-index="5">
+                    <img src="https://ik.imagekit.io/4awlyo9bf/images/CARDS/1.png" 
+                         alt="Banner Design" class="w-full h-64 object-cover object-top">
+                    <div class="p-4 bg-white">
+                        <h3 class="text-lg font-medium text-gray-800">Cards & Mockups Design</h3>
+                        <p class="text-gray-600">T-shirts mockups and business cards</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-10">
+                <button id="viewMoreGallery" class="bg-primary text-white px-6 py-3 rounded-button font-medium hover:bg-primary/90 transition-colors shadow-md whitespace-nowrap">
+                    View More Designs
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Modal -->
+    <div id="galleryModal" class="modal">
+        <div class="container mx-auto px-6 py-10 h-full flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-white">Design Gallery</h3>
+                <button id="closeGallery" class="text-white hover:text-gray-300 transition-colors">
+                    <div class="w-10 h-10 flex items-center justify-center">
+                        <i class="ri-close-line ri-2x"></i>
+                    </div>
+                </button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="galleryGrid">
+                    <!-- Gallery images will be populated here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Education Section -->
+    <section id="education" class="py-20 bg-white section">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">EDUCATION HISTORY</h2>
+                <div class="h-1 w-20 bg-primary mx-auto"></div>
+            </div>
+            
+            <div class="max-w-10xl mx-auto">
+                <div class="space-y-12 relative">
+                    <div class="timeline-line h-full"></div>
+                    
+                    <div class="pl-8 relative">
+                        <div class="timeline-dot"></div>
+                        <div class="bg-white rounded-xl shadow-md p-6 card-3d">
+                            <div class="card-shine"></div>
+                            <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                                <h3 class="text-xl font-semibold text-gray-800">Bachelor Engineering (IT)</h3>
+                                <div class="flex items-center mt-2 md:mt-0">
+                                    <div class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                                        2018 - 2022 | GRADUATED
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <div class="w-32 min-w-[8rem] font-medium text-gray-700">Institute:</div>
+                                    <div class="text-gray-600">Sardar Patel College of Engineering</div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-32 min-w-[8rem] font-medium text-gray-700">CGPA:</div>
+                                    <div class="text-gray-600">7.23</div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-32 min-w-[8rem] font-medium text-gray-700">Percentage(%):</div>
+                                    <div class="text-gray-600">68.6% 12th</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pl-8 relative">
+                        <div class="timeline-dot"></div>
+                        <div class="bg-white rounded-xl shadow-md p-6 card-3d">
+                            <div class="card-shine"></div>
+                            <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                                <h3 class="text-xl font-semibold text-gray-800">HSC [12 TH]</h3>
+                                <div class="flex items-center mt-2 md:mt-0">
+                                    <div class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                                        March 2017
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <div class="w-32 min-w-[8rem] font-medium text-gray-700">Institute:</div>
+                                    <div class="text-gray-600">National Institute of open Schooling</div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-32 min-w-[8rem] font-medium text-gray-700">Percentage(%):</div>
+                                    <div class="text-gray-600">61.00%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pl-8 relative">
+                        <div class="timeline-dot"></div>
+                        <div class="bg-white rounded-xl shadow-md p-6 card-3d">
+                            <div class="card-shine"></div>
+                            <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                                <h3 class="text-xl font-semibold text-gray-800">HSC [10 TH]</h3>
+                                <div class="flex items-center mt-2 md:mt-0">
+                                    <div class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                                        March 2015
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <div class="w-32 min-w-[8rem] font-medium text-gray-700">Institute:</div>
+                                    <div class="text-gray-600">St. Anne's High school, Gujarat Board</div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-32 min-w-[8rem] font-medium text-gray-700">Percentage(%):</div>
+                                    <div class="text-gray-600">56.00%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-50 section">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">GET IN TOUCH</h2>
+                <div class="h-1 w-20 bg-primary mx-auto mb-6"></div>
+                <p class="text-gray-600 max-w-2xl mx-auto">Have a project in mind or want to discuss potential opportunities? Feel free to reach out!</p>
+            </div>
+            
+            <div class="max-w-6xl mx-auto">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="flex flex-col lg:flex-row">
+                        <div class="w-full lg:w-1/2 bg-primary p-8 text-white">
+                            <h3 class="text-xl font-semibold mb-6">Contact Information</h3>
+                            
+                            <div class="space-y-6">
+                                <div class="flex items-start">
+                                    <div class="w-10 h-10 flex items-center justify-center bg-white/10 rounded-full mr-4">
+                                        <i class="ri-map-pin-line ri-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-white/80 mb-1">Address</p>
+                                        <p class="font-medium">5-34 Ramkrishna nagar, Nadiad</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="w-10 h-10 flex items-center justify-center bg-white/10 rounded-full mr-4">
+                                        <i class="ri-mail-line ri-lg"></i>
+                                    </div>
+                                    <div class="w-2">
+                                        <p class="text-white/80 mb-1">Email</p>
+                                        <p class="font-medium">nayanchauhan11111@gmail.com</p>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class="flex items-start">
+                                    <div class="w-10 h-10 flex items-center justify-center bg-white/10 rounded-full mr-4">
+                                        <i class="ri-phone-line ri-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-white/80 mb-1">Phone</p>
+                                        <p class="font-medium">8200701016</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-12">
+                                <h4 class="text-lg font-medium mb-4">Connect with me</h4>
+                                <div class="flex space-x-4">
+                                    <a href="https://www.linkedin.com/in/nayan-chauhan-50334230b"" class="text-white hover:text-white/80 transition-colors">
+                                        <div class="w-10 h-10 flex items-center justify-center bg-white/10 rounded-full">
+                                            <i class="ri-linkedin-fill ri-lg"></i>
+                                        </div>
+                                    </a>
+                                    <a href="https://github.com/Nayan9687" class="text-white hover:text-white/80 transition-colors">
+                                        <div class="w-10 h-10 flex items-center justify-center bg-white/10 rounded-full">
+                                            <i class="ri-github-fill ri-lg"></i>
+                                        </div>
+                                    </a>
+                                    <a href="https://www.instagram.com/rc_rajput007/" class="text-white hover:text-white/80 transition-colors">
+                                        <div class="w-10 h-10 flex items-center justify-center bg-white/10 rounded-full">
+                                            <i class="ri-instagram-fill ri-lg"></i>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="w-full lg:w-2/3 p-8">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-6">Send a Message</h3>
+                            
+                            <form id="contactForm">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label for="name" class="block text-gray-700 mb-2">Your Name</label>
+                                        <input type="text" id="name" class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="Enter Your Name">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="email" class="block text-gray-700 mb-2">Your Email</label>
+                                        <input type="email" id="email" class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="email@example.com">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <label for="subject" class="block text-gray-700 mb-2">Subject</label>
+                                    <input type="text" id="subject" class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="Project Inquiry">
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <label for="message" class="block text-gray-700 mb-2">Message</label>
+                                    <textarea id="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="Your message here..."></textarea>
+                                </div>
+                                
+                                <button type="submit" class="bg-primary text-white px-6 py-3 rounded-button font-medium hover:bg-primary/90 transition-colors shadow-md whitespace-nowrap">
+                                    Send Message
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <div class="text-2xl font-bold mb-2">
+                        <span class="text-primary">Nayan</span> Chauhan
+                    </div>
+                    <p class="text-gray-400">Front-end Developer & Graphic Designer</p>
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="https://www.linkedin.com/in/nayan-chauhan-50334230b"" class="text-gray-400 hover:text-primary transition-colors">
+                        <div class="w-10 h-10 flex items-center justify-center">
+                            <i class="ri-linkedin-fill ri-lg"></i>
+                        </div>
+                    </a>
+                    <a href="https://github.com/Nayan9687" class="text-gray-400 hover:text-primary transition-colors">
+                        <div class="w-10 h-10 flex items-center justify-center">
+                            <i class="ri-github-fill ri-lg"></i>
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/rc_rajput007/" class="text-gray-400 hover:text-primary transition-colors">
+                        <div class="w-10 h-10 flex items-center justify-center">
+                            <i class="ri-instagram-fill ri-lg"></i>
+                        </div>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                        <div class="w-10 h-10 flex items-center justify-center">
+                            <i class="ri-dribbble-fill ri-lg"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 mb-4 md:mb-0"> 2025 Nayan Chauhan. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script id="navigationScript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const closeMenu = document.getElementById('closeMenu');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            menuToggle.addEventListener('click', function() {
+                mobileMenu.classList.remove('translate-x-full');
+            });
+            
+            closeMenu.addEventListener('click', function() {
+                mobileMenu.classList.add('translate-x-full');
+            });
+            
+            // Close menu when nav link is clicked
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.add('translate-x-full');
+                });
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Scroll progress bar
+            window.addEventListener('scroll', function() {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                document.getElementById('progressBar').style.width = scrolled + '%';
+            });
+        });
+    </script>
+
+    <script id="animationScript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // Intersection Observer for section animations
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // 3D card effect
+            const cards = document.querySelectorAll('.card-3d');
+            
+            cards.forEach(card => {
+                card.addEventListener('mousemove', function(e) {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = (y - centerY) / 20;
+                    const rotateY = (centerX - x) / 20;
+                    
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+                });
+            });
+        });
+    </script>
+
+    <script id="galleryScript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            const galleryModal = document.getElementById('galleryModal');
+            const closeGallery = document.getElementById('closeGallery');
+            const galleryGrid = document.getElementById('galleryGrid');
+            const viewMoreGallery = document.getElementById('viewMoreGallery');
+            
+            // Gallery images
+            const galleryImages = [
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/LOGO/1.png",
+                    title: "LOGO",
+                    description: ""
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/LOGO/12.png",
+                    title: "LOGO",
+                    description: ""
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/LOGO/4.png",
+                    title: "LOGO",
+                    description: ""
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/LOGO/11.png",
+                    title: "LOGO",
+                    description: ""
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/LOGO/5.png",
+                    title: "LOGO",
+                    description: ""
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/LOGO/6.png",
+                    title: "LOGO",
+                    description: ""
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/POST/17.png",
+                    title: "Fashion Instagram Post",
+                    description: "Social media content for clothing brand"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/POST/15.png",
+                    title: "Fashion Instagram Post",
+                    description: "Social media content for clothing brand"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/POST/18.png",
+                    title: "Fashion Instagram Post",
+                    description: "Social media content for clothing brand"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/POST/7.png",
+                    title: "Fashion Instagram Post",
+                    description: "Social media content for clothing brand"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/POST/5.png",
+                    title: "Fashion Instagram Post",
+                    description: "Social media content for clothing brand"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/POST/17.png",
+                    title: "Fashion Instagram Post",
+                    description: "Social media content for clothing brand"
+                },
+
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/POST/2.png",
+                    title: "Food Instagram Post",
+                    description: "Social media content for Restaurent"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/POST/1.png",
+                    title: "Food Instagram Post",
+                    description: "Social media content for Restaurent"
+                },
+
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/UIUX/post%20size%20.png",
+                    title: "Figma App UI",
+                    description: "Mobile interface for shopping platform"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/WEBSITE/sici.png",
+                    title: "Website Landing Page",
+                    description: "Web design for software service"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/WEBSITE/eduzone.png",
+                    title: "Website Landing Page",
+                    description: "Web design for software service"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/PRODUCTS/1.png",
+                    title: "Product Packaging",
+                    description: "Product box design for beauty brand"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/PRODUCTS/2.png",
+                    title: "Product Packaging",
+                    description: "Product box design for beauty brand"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/PRODUCTS/3.png",
+                    title: "Product Packaging",
+                    description: "Product box design for beauty brand"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/PRODUCTS/4.png",
+                    title: "Product Packaging",
+                    description: "Product box design for beauty brand"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/PRODUCTS/5.png",
+                    title: "Product Packaging",
+                    description: "Product box design for beauty brand"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/CARDS/1.png",
+                    title: "Business Card Design",
+                    description: "Corporate identity for consulting firm"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/CARDS/2.png",
+                    title: "Business Card Design",
+                    description: "Corporate identity for consulting firm"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/CARDS/3.png",
+                    title: "Business Card Design",
+                    description: "Corporate identity for consulting firm"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/CARDS/4.png",
+                    title: "Business Card Design",
+                    description: "Corporate identity for consulting firm"
+                },                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/CARDS/5.png",
+                    title: "Business Card Design",
+                    description: "Corporate identity for consulting firm"
+                },                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/CARDS/6.png",
+                    title: "Business Card Design",
+                    description: "Corporate identity for consulting firm"
+                },                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/CARDS/7.png",
+                    title: "Business Card Design",
+                    description: "Corporate identity for consulting firm"
+                },                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/CARDS/8.png",
+                    title: "Business Card Design",
+                    description: "Corporate identity for consulting firm"
+                },                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/CARDS/9.png",
+                    title: "Business Card Design",
+                    description: "Corporate identity for consulting firm"
+                },                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/CARDS/10.png",
+                    title: "Business Card Design",
+                    description: "Corporate identity for consulting firm"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/MOCKUPS/LL1%20(7).png",
+                    title: "T-shirt Design",
+                    description: "Apparel graphic for clothing brand"
+                },                
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/MOCKUPS/LL1%20(8).png",
+                    title: "T-shirt Design",
+                    description: "Apparel graphic for clothing brand"
+                },                
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/MOCKUPS/LL1%20(15).png",
+                    title: "T-shirt Design",
+                    description: "Apparel graphic for clothing brand"
+                },                
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/MOCKUPS/LL1%20(6).png",
+                    title: "T-shirt Design",
+                    description: "Apparel graphic for clothing brand"
+                },                
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/MOCKUPS/LL1%20(2).png",
+                    title: "T-shirt Design",
+                    description: "Apparel graphic for clothing brand"
+                },                
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/MOCKUPS/LL1%20(4).png",
+                    title: "T-shirt Design",
+                    description: "Apparel graphic for clothing brand"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/MOCKUPS/LL1%20(13).png",
+                    title: "T-shirt Design",
+                    description: "Apparel graphic for clothing brand"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/MOCKUPS/LL1%20(1).png",
+                    title: "T-shirt Design",
+                    description: "Apparel graphic for clothing brand"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/MOCKUPS/LL1%20(10).png",
+                    title: "T-shirt Design",
+                    description: "Apparel graphic for clothing brand"
+                },
+                {
+                    src: "https://ik.imagekit.io/4awlyo9bf/images/MOCKUPS/LL1%20(12).png",
+                    title: "T-shirt Design",
+                    description: "Apparel graphic for clothing brand"
+                },
+            ];
+            
+            // Populate gallery modal
+            function populateGalleryModal() {
+                galleryGrid.innerHTML = '';
+                
+                galleryImages.forEach((image, index) => {
+                    const galleryItem = document.createElement('div');
+                    galleryItem.className = 'bg-white rounded-xl text-center overflow-hidden shadow-md';
+                    
+                    galleryItem.innerHTML = `
+                        <img src="${image.src}" alt="${image.title}" class="w-full h-50 object-cover object-top">
+                        <div class="p-4">
+                            <h3 class="text-lg font-medium text-gray-800">${image.title}</h3>
+                            
+                        </div>
+                    `;
+                    
+                    galleryGrid.appendChild(galleryItem);
+                });
+            }
+            
+            // Open gallery modal
+            galleryItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    populateGalleryModal();
+                    galleryModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            viewMoreGallery.addEventListener('click', function() {
+                populateGalleryModal();
+                galleryModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Close gallery modal
+            closeGallery.addEventListener('click', function() {
+                galleryModal.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            // Close modal when clicking outside content
+            galleryModal.addEventListener('click', function(e) {
+                if (e.target === galleryModal) {
+                    galleryModal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    </script>
+
+    <script id="formScript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const contactForm = document.getElementById('contactForm');
+            
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const subject = document.getElementById('subject').value;
+                const message = document.getElementById('message').value;
+                
+                // Form validation
+                if (!name || !email || !subject || !message) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    alert('Please enter a valid email address');
+                    return;
+                }
+                
+                // Simulate form submission
+                alert('Thank you for your message! I will get back to you soon.');
+                contactForm.reset();
+            });
+        });
+    </script>
+</body>
+</html>
